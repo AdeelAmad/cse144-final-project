@@ -1,14 +1,8 @@
-import os
-import random
-import numpy as np
 import torch
-import torch.nn as nn
-import pandas as pd
-import matplotlib.pyplot as plt
-from PIL import Image
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, random_split, Dataset
-from torchvision import models
+from dataloader import DatasetLoader
+from model import Model
+from trainer import Trainer
+from tester import Tester
 
 class Colors:
     BLUE = '\033[94m'
@@ -20,10 +14,25 @@ class Colors:
 
 
 def main():
-    print(f"{Colors.BLUE}Torch:{Colors.END}", torch.__version__)
-    device = "cpu"
-    print(f"{Colors.BLUE}Device:{Colors.END}", device)
-    
+    device = "mps"
+
+    print(f"\n{Colors.BOLD}{'─'*60}{Colors.END}")
+    print(f"{Colors.BOLD}  CSE144 Final Project{Colors.END}")
+    print(f"{Colors.BOLD}{'─'*60}{Colors.END}")
+    print(f"  {Colors.BLUE}Torch  :{Colors.END} {torch.__version__}")
+    print(f"  {Colors.BLUE}Device :{Colors.END} {device.upper()}")
+    print(f"{Colors.BOLD}{'─'*60}{Colors.END}\n")
+
+    datasetloader = DatasetLoader()
+    modelObj = Model(device)
+    model = modelObj.model
+
+    trainer = Trainer(model, device)
+    ckpt_path = trainer.train(model, datasetloader.train_loader, datasetloader.val_loader)
+    trainer.curves()
+
+    Tester(128, ckpt_path, model, device)
+
 
 
 if __name__ == "__main__":

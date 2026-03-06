@@ -40,7 +40,7 @@ class DatasetLoader():
         # Important variables + seed
         data_dir = "./data/train"
         batch_size = 128
-        num_workers = 2
+        num_workers = 0
         train_val_split = 0.8
         torch.manual_seed(42)
 
@@ -86,11 +86,17 @@ class DatasetLoader():
         val_set = Subset(val_dataset_full, val_indices)
 
         # Dataloaders
-        train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-        val_loader = DataLoader(dataset=val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+        self._train_loader = DataLoader(dataset=train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+        self._val_loader = DataLoader(dataset=val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
         print(f"{Colors.BOLD}{Colors.BLUE}Total images:{Colors.END} {total_data}")
         print(f"{Colors.BOLD}{Colors.BLUE}Training set:{Colors.END} {len(train_set)}")
         print(f"{Colors.BOLD}{Colors.BLUE}Validation set:{Colors.END} {len(val_set)}")
 
-        return train_loader, val_loader
+    @property
+    def train_loader(self):
+        return self._train_loader
+    
+    @property
+    def val_loader(self):
+        return self._val_loader

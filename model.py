@@ -11,7 +11,7 @@ class Colors:
     OFF = '\033[0m'
 
 class Model():
-    def __init__(self):
+    def __init__(self, device):
         # Load model with weights
         model = models.vgg19_bn(weights=models.VGG19_BN_Weights.DEFAULT)
 
@@ -27,8 +27,7 @@ class Model():
         model.classifier[6] = nn.Linear(num_feat, 100)
 
         # Move to device
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = model.to(device)
+        self._model = model.to(device)
 
         # Parameter count (Total vs Trainable)
         total_params = sum(p.numel() for p in model.parameters())
@@ -37,4 +36,6 @@ class Model():
         print(f"{Colors.BOLD}{Colors.GREEN}Total params:{Colors.END} {total_params:,}")
         print(f"{Colors.BOLD}{Colors.GREEN}Trainable params:{Colors.END} {trainable_params:,}")
 
-        return model
+    @property
+    def model(self):
+        return self._model
