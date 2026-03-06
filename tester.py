@@ -34,7 +34,8 @@ class Colors:
     END = '\033[0m'
 
 class Tester():
-    def __init__(self, batch_size, ckpt_path, model, device):
+    def __init__(self, batch_size, ckpt_path, model, device, idx_to_class):
+        self.idx_to_class = idx_to_class
         val_tf = transforms.Compose([
             transforms.Resize((256, 256)),
             transforms.CenterCrop(224),
@@ -64,7 +65,8 @@ class Tester():
                 _, preds = torch.max(outputs, 1)
 
                 for img_id, pred in zip(img_ids, preds):
-                    predictions.append({"ID": img_id, "Label": pred.item()})
+                    actual_label = int(self.idx_to_class[pred.item()])
+                    predictions.append({"ID": img_id, "Label": actual_label})
 
         submission_df = pd.DataFrame(predictions)
         submission_df.to_csv("submission.csv", index=False)

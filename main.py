@@ -24,6 +24,14 @@ def main():
     print(f"{Colors.BOLD}{'─'*60}{Colors.END}\n")
 
     datasetloader = DatasetLoader()
+
+    train_data = datasetloader.train_loader.dataset
+    
+    if hasattr(train_data, 'dataset'):
+        train_data = train_data.dataset 
+        
+    idx_to_class = {v: k for k, v in train_data.class_to_idx.items()}
+
     modelObj = Model(device)
     model = modelObj.model
 
@@ -31,7 +39,8 @@ def main():
     ckpt_path = trainer.train(model, datasetloader.train_loader, datasetloader.val_loader)
     trainer.curves()
 
-    Tester(128, ckpt_path, model, device)
+
+    Tester(128, ckpt_path, model, device, idx_to_class)
 
 
 
