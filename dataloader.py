@@ -22,6 +22,7 @@ class Colors:
 class DatasetLoader():
     def __init__(self):
         print(f"{Colors.BLUE}Fetching competition data...{Colors.END}")
+        kagglehub.login()
         try:
             path = kagglehub.competition_download('ucsc-cse-144-winter-2026-final-project')
             print(f"{Colors.GREEN}Data ready at: {Colors.BOLD}{path}{Colors.END}")
