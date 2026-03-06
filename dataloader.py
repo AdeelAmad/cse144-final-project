@@ -21,24 +21,16 @@ class Colors:
 '''
 class DatasetLoader():
     def __init__(self):
-        # Dataset downloader
-        data_target = "./data/train"
-        if not os.path.isdir(data_target):
-            print(f"{Colors.YELLOW}🚀 Target directory not found. Starting setup...{Colors.END}")
-            try:
-                print(f"{Colors.BLUE}🔑 Authenticating with Kaggle...{Colors.END}")
-                kagglehub.login()
-                print(f"{Colors.BLUE}📥 Downloading competition data to {Colors.BOLD}{data_target}{Colors.END}...")
-                kagglehub.competition_download('ucsc-cse-144-winter-2026-final-project', output_dir='./data')
-                print(f"{Colors.GREEN}✅ Success: Data downloaded and ready for training.{Colors.END}")
-            except Exception as e:
-                print(f"\033[91m❌ Error during download: {e}\033[0m")
-        else:
-            print(f"{Colors.GREEN}📂 Data already exists at {Colors.BOLD}{data_target}{Colors.END}. Skipping download.{Colors.OFF}")
-            
+        print(f"{Colors.BLUE}Fetching competition data...{Colors.END}")
+        try:
+            path = kagglehub.competition_download('ucsc-cse-144-winter-2026-final-project')
+            print(f"{Colors.GREEN}Data ready at: {Colors.BOLD}{path}{Colors.END}")
+        except Exception as e:
+            print(f"\033[91mError during download: {e}\033[0m")
+            raise
 
         # Important variables + seed
-        data_dir = "./data/train"
+        data_dir = os.path.join(path, 'train')
         batch_size = 128
         num_workers = 0
         train_val_split = 0.8

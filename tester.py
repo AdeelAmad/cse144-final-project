@@ -1,6 +1,7 @@
 import os
 import torch
 import pandas as pd
+import kagglehub
 from PIL import Image
 from torchvision import transforms
 from torch.utils.data import DataLoader, Dataset
@@ -41,7 +42,8 @@ class Tester():
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
 
-        test_dir = "./data/test"
+        path = kagglehub.competition_download('ucsc-cse-144-winter-2026-final-project')
+        test_dir = os.path.join(path, 'test')
         test_dataset = UnlabeledTestDataset(test_dir=test_dir, transform=val_tf)
         test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
