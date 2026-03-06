@@ -40,7 +40,7 @@ def main():
     trainer.curves()
 
 
-    Tester(128, ckpt_path, model, device, idx_to_class)
+    Tester(512, ckpt_path, model, device, idx_to_class)
 
 
 

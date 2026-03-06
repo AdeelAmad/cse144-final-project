@@ -13,19 +13,18 @@ class Colors:
 class Model():
     def __init__(self, device):
         # Load model with weights
-        model = models.vgg19_bn(weights=models.VGG19_BN_Weights.DEFAULT)
-
+        model = models.vit_l_16(weights=models.ViT_L_16_Weights.DEFAULT)
         # Freeze all parameteres
         for param in model.parameters():
             param.requires_grad = False
 
         # Get the last output layer
         # VGG19 classifier structure: [Linear(0), ReLU(1), Dropout(2), Linear(3), ReLU(4), Dropout(5), Linear(6)]
-        num_feat = model.classifier[6].in_features
+        num_feat = model.heads.head.in_features
 
         # Replace the last layer with a new one with 100 classes
-        model.classifier[6] = nn.Linear(num_feat, 100)
-
+        model.heads.head = nn.Linear(num_feat, 100)
+        
         # Move to device
         self._model = model.to(device)
 
