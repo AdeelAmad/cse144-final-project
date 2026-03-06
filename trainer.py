@@ -18,7 +18,7 @@ class Trainer():
         self.optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-3)
         self.scaler = torch.amp.GradScaler() if device == 'cuda' else None
         self.device = device
-        self.epochs = 15
+        self.epochs = 50
         self.history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
 
     def train_one_epoch(self, model, loader, epoch):
