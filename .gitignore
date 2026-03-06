@@ -210,3 +210,4 @@ __marimo__/
 ./data
 ./checkpoints
 checkpoints/best_final_cnn.pt
+.DS_Store
