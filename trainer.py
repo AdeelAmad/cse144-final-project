@@ -14,11 +14,12 @@ class Colors:
 
 class Trainer():
     def __init__(self, model, device):
-        self.criterion = nn.CrossEntropyLoss()
+        self.epochs = 40
+        self.criterion = nn.CrossEntropyLoss(label_smoothing=0.15)
         self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4, weight_decay=0.05)
+        self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=self.epochs, eta_min=1e-6)
         self.scaler = torch.amp.GradScaler() if device == 'cuda' else None
         self.device = device
-        self.epochs = 50
         self.history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
 
     def train_one_epoch(self, model, loader, epoch):
@@ -94,6 +95,8 @@ class Trainer():
 
             train_loss, train_acc = self.train_one_epoch(model, train_loader, epoch)
             val_loss, val_acc = self.evaluate(model, val_loader, epoch)
+
+            self.scheduler.step()
 
             self.history["train_loss"].append(train_loss)
             self.history["train_acc"].append(train_acc)

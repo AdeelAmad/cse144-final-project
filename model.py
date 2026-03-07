@@ -26,7 +26,12 @@ class Model():
         num_feat = model.classifier[2].in_features
 
         # Replace the last layer with a new one with 100 classes
-        model.classifier[2] = nn.Linear(num_feat, 100)
+        model.classifier = nn.Sequential(
+            model.classifier[0],
+            model.classifier[1],
+            nn.Dropout(p=0.5),
+            nn.Linear(num_feat, 100)
+        )
         
         # Move to device
         self._model = model.to(device)
