@@ -15,7 +15,7 @@ class Colors:
 class Trainer():
     def __init__(self, model, device):
         self.criterion = nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-3)
+        self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4, weight_decay=0.05)
         self.scaler = torch.amp.GradScaler() if device == 'cuda' else None
         self.device = device
         self.epochs = 50

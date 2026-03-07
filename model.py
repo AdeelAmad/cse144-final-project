@@ -18,6 +18,10 @@ class Model():
         for param in model.parameters():
             param.requires_grad = False
 
+        for block in model.encoder.layers[-2:]:
+            for param in block.parameters():
+                param.requires_grad = True
+
         # Get the last output layer
         # VGG19 classifier structure: [Linear(0), ReLU(1), Dropout(2), Linear(3), ReLU(4), Dropout(5), Linear(6)]
         num_feat = model.heads.head.in_features
