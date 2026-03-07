@@ -32,7 +32,7 @@ class DatasetLoader():
 
         # Important variables + seed
         data_dir = os.path.join(path, 'train')
-        batch_size = 512
+        batch_size = 32
         num_workers = 0
         train_val_split = 0.8
         torch.manual_seed(42)

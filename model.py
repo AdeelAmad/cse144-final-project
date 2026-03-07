@@ -13,21 +13,20 @@ class Colors:
 class Model():
     def __init__(self, device):
         # Load model with weights
-        model = models.vit_l_16(weights=models.ViT_L_16_Weights.DEFAULT)
+        model = models.convnext_tiny(weights=models.ConvNeXt_Tiny_Weights.DEFAULT)
         # Freeze all parameteres
         for param in model.parameters():
             param.requires_grad = False
 
-        for block in model.encoder.layers[-2:]:
-            for param in block.parameters():
-                param.requires_grad = True
+        for param in model.features[7].parameters():
+            param.requires_grad = True
 
         # Get the last output layer
         # VGG19 classifier structure: [Linear(0), ReLU(1), Dropout(2), Linear(3), ReLU(4), Dropout(5), Linear(6)]
-        num_feat = model.heads.head.in_features
+        num_feat = model.classifier[2].in_features
 
         # Replace the last layer with a new one with 100 classes
-        model.heads.head = nn.Linear(num_feat, 100)
+        model.classifier[2] = nn.Linear(num_feat, 100)
         
         # Move to device
         self._model = model.to(device)
