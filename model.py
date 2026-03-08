@@ -13,22 +13,19 @@ class Colors:
 class Model():
     def __init__(self, device):
         # Load model with weights
-        model = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.DEFAULT)
+        model = models.convnext_tiny(weights=models.ConvNeXt_Tiny_Weights.DEFAULT)
 
         # Freeze all parameteres
         for param in model.parameters():
             param.requires_grad = False
 
-        # for param in model.features[7].parameters():
-        #     param.requires_grad = True
-        # for param in model.features[8].parameters():
-        #     param.requires_grad = True
+        for param in model.features[7].parameters():
+            param.requires_grad = True
 
         # Get the last output layer
-        # VGG19 classifier structure: [Linear(0), ReLU(1), Dropout(2), Linear(3), ReLU(4), Dropout(5), Linear(6)]
-        num_feat = model.classifier[1].in_features
-        model.classifier = nn.Sequential(
-            nn.Dropout(p=0.5, inplace=True),
+        num_feat = model.classifier[2].in_features
+        model.classifier[2] = nn.Sequential(
+            # nn.Dropout(p=0.5, inplace=True),
             nn.Linear(num_feat, 100)
         )
 
