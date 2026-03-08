@@ -15,6 +15,7 @@ class Colors:
 
 def main():
     device = "mps"
+    batch_size = 32
 
     print(f"\n{Colors.BOLD}{'─'*60}{Colors.END}")
     print(f"{Colors.BOLD}  CSE144 Final Project{Colors.END}")
@@ -23,7 +24,7 @@ def main():
     print(f"  {Colors.BLUE}Device :{Colors.END} {device.upper()}")
     print(f"{Colors.BOLD}{'─'*60}{Colors.END}\n")
 
-    datasetloader = DatasetLoader()
+    datasetloader = DatasetLoader(batch_size)
 
     train_data = datasetloader.train_loader.dataset
     
@@ -40,7 +41,7 @@ def main():
     trainer.curves()
 
 
-    Tester(32, ckpt_path, model, device, idx_to_class)
+    Tester(batch_size, ckpt_path, model, device, idx_to_class)
 
 
 

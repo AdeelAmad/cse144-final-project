@@ -20,7 +20,7 @@ class Colors:
     val_loader
 '''
 class DatasetLoader():
-    def __init__(self):
+    def __init__(self, batch_size):
         print(f"{Colors.BLUE}Fetching competition data...{Colors.END}")
         kagglehub.login()
         try:
@@ -32,7 +32,6 @@ class DatasetLoader():
 
         # Important variables + seed
         data_dir = os.path.join(path, 'train')
-        batch_size = 32
         num_workers = 0
         train_val_split = 0.8
         torch.manual_seed(42)
