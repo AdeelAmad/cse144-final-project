@@ -34,14 +34,12 @@ def main():
     idx_to_class = {v: k for k, v in train_data.class_to_idx.items()}
 
     modelObj = Model(device)
-    model = modelObj.model
 
-    trainer = Trainer(model, device)
-    ckpt_path = trainer.train(model, datasetloader.train_loader, datasetloader.val_loader)
+    trainer = Trainer(modelObj, device)
+    ckpt_path = trainer.train(datasetloader.train_loader, datasetloader.val_loader)
     trainer.curves()
 
-
-    Tester(batch_size, ckpt_path, model, device, idx_to_class)
+    Tester(batch_size, ckpt_path, modelObj, device, idx_to_class)
 
 
 

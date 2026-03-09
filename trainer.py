@@ -14,13 +14,18 @@ class Colors:
 
 class Trainer():
     def __init__(self, model, device):
+        self.modelObj = model
         self.epochs = 40
         self.criterion = nn.CrossEntropyLoss(label_smoothing=0.15)
-        self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4, weight_decay=0.05)
-        self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=self.epochs, eta_min=1e-6)
         self.scaler = torch.amp.GradScaler() if device == 'cuda' else None
         self.device = device
         self.history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
+
+        self.setup_optimizer(lr=1e-3)
+
+    def setup_optimizer(self, lr):
+        self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, self.modelObj.model.parameters()), lr=lr, weight_decay=0.05)
+        self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=self.epochs, eta_min=1e-6)
 
     def train_one_epoch(self, model, loader, epoch):
         model.train()
@@ -78,11 +83,13 @@ class Trainer():
 
         return total_loss / total_count, total_accuracy / total_count
 
-    def train(self, model, train_loader, val_loader):
+    def train(self, train_loader, val_loader):
         best_val_acc = 0.0
         best_epoch = -1
         ckpt_path = "./checkpoints/best_final_cnn.pt"
         os.makedirs(os.path.dirname(ckpt_path), exist_ok=True)
+
+        model = self.modelObj.model
 
         print(f"\n{Colors.BOLD}{'─'*60}{Colors.END}")
         print(f"{Colors.BOLD}  Training  |  {self.epochs} epochs  |  {self.device.upper()}{Colors.END}")
@@ -91,6 +98,12 @@ class Trainer():
         start_time = time.perf_counter()
 
         for epoch in tqdm(range(1, self.epochs + 1), desc="Epochs", unit="epoch"):
+
+            if epoch == 11:
+                tqdm.write(f"\n{Colors.YELLOW}{Colors.BOLD}Stage 2 training...{Colors.END}\n")
+                self.modelObj.stage_2_training()
+                self.setup_optimizer(lr=1e-4)
+
             epoch_start = time.perf_counter()
 
             train_loss, train_acc = self.train_one_epoch(model, train_loader, epoch)

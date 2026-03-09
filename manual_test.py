@@ -34,9 +34,8 @@ def main():
     idx_to_class = {v: k for k, v in train_data.class_to_idx.items()}
 
     modelObj = Model(device)
-    model = modelObj.model
 
-    Tester(batch_size, "./checkpoints/best_final_cnn.pt", model, device, idx_to_class)
+    Tester(batch_size, "./checkpoints/best_final_cnn.pt", modelObj, device, idx_to_class)
 
 
 

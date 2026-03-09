@@ -34,13 +34,15 @@ class Colors:
     END = '\033[0m'
 
 class Tester():
-    def __init__(self, batch_size, ckpt_path, model, device, idx_to_class):
+    def __init__(self, batch_size, ckpt_path, modelObj, device, idx_to_class):
         self.idx_to_class = idx_to_class
         val_tf = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
+
+        model = modelObj.model
 
         path = kagglehub.competition_download('ucsc-cse-144-winter-2026-final-project')
         test_dir = os.path.join(path, 'test')
