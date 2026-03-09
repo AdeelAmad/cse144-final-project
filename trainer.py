@@ -4,6 +4,7 @@ import os
 import time
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+from torchvision.transforms import v2
 
 class Colors:
     BLUE = '\033[94m'
@@ -13,13 +14,18 @@ class Colors:
     END = '\033[0m'
 
 class Trainer():
-    def __init__(self, model, device):
+    def __init__(self, model, device, epochs):
         self.modelObj = model
-        self.epochs = 40
+        self.epochs = epochs
         self.criterion = nn.CrossEntropyLoss(label_smoothing=0.15)
         self.scaler = torch.amp.GradScaler() if device == 'cuda' else None
         self.device = device
         self.history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
+
+        self.mixup_cutmix = v2.RandomChoice([
+            v2.CutMix(num_classes=100, alpha=1.0),
+            v2.MixUp(num_classes=100, alpha=0.2)
+        ])
 
         self.setup_optimizer(lr=1e-3)
 
@@ -36,8 +42,13 @@ class Trainer():
         pbar = tqdm(loader, desc=f"  Train {epoch:2d}/{self.epochs}", leave=False, unit="batch")
         for inputs, labels in pbar:
             inputs, labels = inputs.to(self.device), labels.to(self.device)
+            inputs, labels = self.mixup_cutmix(inputs, labels)
 
             self.optimizer.zero_grad()
+
+            # mixup
+
+
 
             with torch.amp.autocast(device_type=self.device):
                 outputs = model(inputs)
@@ -53,7 +64,9 @@ class Trainer():
 
             total_loss += loss.item() * inputs.size(0)
             _, preds = torch.max(outputs, 1)
-            total_accuracy += (preds == labels).sum().item()
+            _, _labels = torch.max(labels, 1) 
+            
+            total_accuracy += (preds == _labels).sum().item()
             total_count += labels.size(0)
 
             pbar.set_postfix(loss=f"{total_loss/total_count:.4f}", acc=f"{total_accuracy/total_count:.4f}")

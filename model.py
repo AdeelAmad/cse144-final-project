@@ -20,7 +20,7 @@ class Model():
         self._model.classifier = nn.Sequential(
             self._model.classifier[0],
             self._model.classifier[1],
-            nn.Dropout(p=0.5),
+            nn.Dropout(p=0.8),
             nn.Linear(num_feat, 100)
         )
         
