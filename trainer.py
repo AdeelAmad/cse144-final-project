@@ -23,10 +23,10 @@ class Trainer():
         self.history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
 
         self.mixup = v2.CutMix(num_classes=100, alpha=1.0)
-        self.cutmix = v2.MixUp(num_classes=100, alpha=0.4)
+        self.cutmix = v2.MixUp(num_classes=100, alpha=1.0)
 
 
-        self.setup_optimizer(lr=1e-3)
+        self.setup_optimizer(lr=1e-2)
 
     def setup_optimizer(self, lr, t_max=None):
         self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, self.modelObj.model.parameters()), lr=lr, weight_decay=0.05)
@@ -111,7 +111,7 @@ class Trainer():
             if epoch == 21:
                 tqdm.write(f"\n{Colors.YELLOW}{Colors.BOLD}Stage 2 training...{Colors.END}\n")
                 self.modelObj.stage_2_training()
-                self.setup_optimizer(lr=1e-4, t_max=self.epochs - 20)
+                self.setup_optimizer(lr=1e-3, t_max=self.epochs - 20)
 
             epoch_start = time.perf_counter()
 
