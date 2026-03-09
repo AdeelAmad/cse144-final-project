@@ -3,6 +3,7 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Subset
 import os
 import kagglehub
+from torchvision.transforms import v2
 
 class Colors:
     BLUE = '\033[94m'
@@ -37,23 +38,21 @@ class DatasetLoader():
 
         # Training dataset transforms
         # Performing random crop, flips, color jitter, rotation
-        train_tf = transforms.Compose([
-            transforms.RandomResizedCrop((512, 512), scale=(0.7, 1.0)),
-            transforms.CenterCrop(350),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomVerticalFlip(),
-            transforms.RandAugment(num_ops=2, magnitude=4),
-            transforms.ToTensor(),
-            transforms.RandomErasing(p=0.1),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        train_tf = v2.Compose([
+            v2.RandomResizedCrop(size=(384, 384), scale=(0.7, 1.0), antialias=True),
+            v2.RandomHorizontalFlip(p=0.5),
+            v2.RandAugment(num_ops=2, magnitude=7),
+            v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True)]),
+            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            v2.RandomErasing(p=0.2)
         ])
 
         # Validation tranforms
-        val_tf = transforms.Compose([
-            transforms.Resize(512),
-            transforms.CenterCrop(350),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        val_tf = v2.Compose([
+            v2.Resize(432, antialias=True),
+            v2.CenterCrop(384),
+            v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True)]),
+            v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
 
         # Fixes lexicographical class names issue
