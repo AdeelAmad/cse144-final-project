@@ -38,8 +38,8 @@ class DatasetLoader():
         # Training dataset transforms
         # Performing random crop, flips, color jitter, rotation
         train_tf = transforms.Compose([
-            transforms.RandomResizedCrop((256, 256), scale=(0.7, 1.0)),
-            transforms.CenterCrop(224),
+            transforms.RandomResizedCrop((512, 512), scale=(0.7, 1.0)),
+            transforms.CenterCrop(350),
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip(),
             transforms.RandAugment(num_ops=2, magnitude=4),
@@ -50,8 +50,8 @@ class DatasetLoader():
 
         # Validation tranforms
         val_tf = transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
+            transforms.Resize(512),
+            transforms.CenterCrop(350),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
