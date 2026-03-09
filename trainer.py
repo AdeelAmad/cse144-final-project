@@ -17,21 +17,20 @@ class Trainer():
     def __init__(self, model, device, epochs):
         self.modelObj = model
         self.epochs = epochs
-        self.criterion = nn.CrossEntropyLoss(label_smoothing=0.15)
+        self.criterion = nn.CrossEntropyLoss()
         self.scaler = torch.amp.GradScaler() if device == 'cuda' else None
         self.device = device
         self.history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
 
-        self.mixup_cutmix = v2.RandomChoice([
-            v2.CutMix(num_classes=100, alpha=1.0),
-            v2.MixUp(num_classes=100, alpha=0.2)
-        ])
+        self.mixup = v2.CutMix(num_classes=100, alpha=1.0)
+        self.cutmix = v2.MixUp(num_classes=100, alpha=0.4)
+
 
         self.setup_optimizer(lr=1e-3)
 
-    def setup_optimizer(self, lr):
+    def setup_optimizer(self, lr, t_max=None):
         self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, self.modelObj.model.parameters()), lr=lr, weight_decay=0.05)
-        self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=self.epochs, eta_min=1e-6)
+        self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=t_max or self.epochs, eta_min=1e-6)
 
     def train_one_epoch(self, model, loader, epoch):
         model.train()
@@ -42,13 +41,10 @@ class Trainer():
         pbar = tqdm(loader, desc=f"  Train {epoch:2d}/{self.epochs}", leave=False, unit="batch")
         for inputs, labels in pbar:
             inputs, labels = inputs.to(self.device), labels.to(self.device)
-            inputs, labels = self.mixup_cutmix(inputs, labels)
+            inputs, labels = self.cutmix(inputs, labels)
+            inputs, labels = self.mixup(inputs, labels)
 
             self.optimizer.zero_grad()
-
-            # mixup
-
-
 
             with torch.amp.autocast(device_type=self.device):
                 outputs = model(inputs)
@@ -112,10 +108,10 @@ class Trainer():
 
         for epoch in tqdm(range(1, self.epochs + 1), desc="Epochs", unit="epoch"):
 
-            if epoch == 11:
+            if epoch == 21:
                 tqdm.write(f"\n{Colors.YELLOW}{Colors.BOLD}Stage 2 training...{Colors.END}\n")
                 self.modelObj.stage_2_training()
-                self.setup_optimizer(lr=1e-4)
+                self.setup_optimizer(lr=1e-4, t_max=self.epochs - 20)
 
             epoch_start = time.perf_counter()
 

@@ -20,7 +20,7 @@ class Model():
         self._model.classifier = nn.Sequential(
             self._model.classifier[0],
             self._model.classifier[1],
-            nn.Dropout(p=0.8),
+            nn.Dropout(p=0.6),
             nn.Linear(num_feat, 100)
         )
         
@@ -44,6 +44,8 @@ class Model():
             param.requires_grad = True
 
     def stage_2_training(self):
+         for param in self._model.features[6].parameters():
+            param.requires_grad = True
          for param in self._model.features[7].parameters():
             param.requires_grad = True
 
