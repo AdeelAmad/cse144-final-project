@@ -27,10 +27,10 @@ class Trainer():
         self.mixup_cutmix = v2.RandomChoice([self.cutmix, self.mixup])
 
 
-        self.setup_optimizer(lr=1e-2)
+        self.setup_optimizer(lr=1e-3)
 
     def setup_optimizer(self, lr, t_max=None):
-        self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, self.modelObj.model.parameters()), lr=lr, weight_decay=0.025)
+        self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, self.modelObj.model.parameters()), lr=lr, weight_decay=0.03)
         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=t_max or self.epochs, eta_min=1e-6)
 
     def train_one_epoch(self, model, loader, epoch):
@@ -113,12 +113,12 @@ class Trainer():
             if epoch == 21:
                 tqdm.write(f"\n{Colors.YELLOW}{Colors.BOLD}Stage 2 training...{Colors.END}\n")
                 self.modelObj.stage_2_training()
-                self.setup_optimizer(lr=1e-3, t_max=self.epochs - 20)
+                self.setup_optimizer(lr=1e-4, t_max=self.epochs - 20)
 
             if epoch == 31:
                 tqdm.write(f"\n{Colors.YELLOW}{Colors.BOLD}Stage 3 training...{Colors.END}\n")
                 self.modelObj.stage_2_training()
-                self.setup_optimizer(lr=1e-4, t_max=self.epochs - 30)
+                self.setup_optimizer(lr=1e-5, t_max=self.epochs - 30)
 
             epoch_start = time.perf_counter()
 
