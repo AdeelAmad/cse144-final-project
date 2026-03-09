@@ -46,9 +46,8 @@ class Model():
     def stage_2_training(self):
          for param in self._model.features[7].parameters():
             param.requires_grad = True
-         for block in self._model.features[5][-3]:
-            for param in block.parameters():
-                param.requires_grad = True
+         for param in self._model.features[5].parameters():
+            param.requires_grad = True
 
     @property
     def model(self):
