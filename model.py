@@ -13,14 +13,13 @@ class Colors:
 class Model():
     def __init__(self, device):
         # Load model with weights
-        self._model = models.convnext_large(weights=models.ConvNeXt_Large_Weights.DEFAULT)
+        self._model = models.efficientnet_v2_l(weights=models.EfficientNet_V2_L_Weights.IMAGENET1K_V1)
 
         # Get the last output layer
-        num_feat = self._model.classifier[2].in_features
+        num_feat = self._model.classifier[1].in_features
+        
         self._model.classifier = nn.Sequential(
-            self._model.classifier[0],
-            self._model.classifier[1],
-            nn.Dropout(p=0.6),
+            nn.Dropout(p=0.6, inplace=True),
             nn.Linear(num_feat, 100)
         )
         
@@ -45,6 +44,12 @@ class Model():
 
     def stage_2_training(self):
          for param in self._model.features[7].parameters():
+            param.requires_grad = True
+         for param in self._model.features[8].parameters():
+            param.requires_grad = True
+
+    def stage_3_training(self):
+         for param in self._model.features[6].parameters():
             param.requires_grad = True
          for param in self._model.features[5].parameters():
             param.requires_grad = True
