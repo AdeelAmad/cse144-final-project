@@ -13,7 +13,7 @@ class Colors:
 class Model():
     def __init__(self, device):
         # Load model with weights
-        self._model = models.convnext_small(weights=models.ConvNeXt_Small_Weights.DEFAULT)
+        self._model = models.convnext_base(weights=models.ConvNeXt_Base_Weights.DEFAULT)
 
         # Get the last output layer
         num_feat = self._model.classifier[2].in_features
