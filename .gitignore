@@ -211,3 +211,4 @@ __marimo__/
 /checkpoints
 checkpoints/best_final_cnn.pt
 .DS_Store
+/visuals
