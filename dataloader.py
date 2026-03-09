@@ -42,9 +42,9 @@ class DatasetLoader():
             transforms.CenterCrop(224),
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip(),
-            transforms.RandAugment(num_ops=2, magnitude=7),
+            transforms.RandAugment(num_ops=2, magnitude=4),
             transforms.ToTensor(),
-            transforms.RandomErasing(p=0.25),
+            transforms.RandomErasing(p=0.1),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
 

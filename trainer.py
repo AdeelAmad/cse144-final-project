@@ -44,7 +44,8 @@ class Trainer():
             inputs, labels = inputs.to(self.device), labels.to(self.device)
             # inputs, labels = self.cutmix(inputs, labels)
             # inputs, labels = self.mixup(inputs, labels)
-            inputs, labels = self.mixup_cutmix(inputs, labels)
+            if torch.rand(1).item() < 0.5:
+                inputs, labels = self.mixup_cutmix(inputs, labels)
 
             self.optimizer.zero_grad()
 
