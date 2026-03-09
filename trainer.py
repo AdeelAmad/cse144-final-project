@@ -63,7 +63,11 @@ class Trainer():
 
             total_loss += loss.item() * inputs.size(0)
             _, preds = torch.max(outputs, 1)
-            _, _labels = torch.max(labels, 1) 
+            
+            if labels.ndim == 2:
+                _, _labels = torch.max(labels, 1) 
+            else:
+                _labels = labels
             
             total_accuracy += (preds == _labels).sum().item()
             total_count += labels.size(0)
