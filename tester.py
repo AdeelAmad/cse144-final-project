@@ -38,8 +38,8 @@ class Tester():
     def __init__(self, batch_size, ckpt_path, modelObj, device, idx_to_class):
         self.idx_to_class = idx_to_class
         val_tf = v2.Compose([
-            v2.Resize(432, antialias=True),
-            v2.CenterCrop(384),
+            v2.Resize(560, antialias=True),
+            v2.CenterCrop(512),
             v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True)]),
             v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])

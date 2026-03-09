@@ -39,7 +39,7 @@ class DatasetLoader():
         # Training dataset transforms
         # Performing random crop, flips, color jitter, rotation
         train_tf = v2.Compose([
-            v2.RandomResizedCrop(size=(384, 384), scale=(0.7, 1.0), antialias=True),
+            v2.RandomResizedCrop(size=(512, 512), scale=(0.7, 1.0), antialias=True),
             v2.RandomHorizontalFlip(p=0.5),
             v2.RandAugment(num_ops=2, magnitude=7),
             v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True)]),
@@ -49,8 +49,8 @@ class DatasetLoader():
 
         # Validation tranforms
         val_tf = v2.Compose([
-            v2.Resize(432, antialias=True),
-            v2.CenterCrop(384),
+            v2.Resize(560, antialias=True),
+            v2.CenterCrop(512),
             v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True)]),
             v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])

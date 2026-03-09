@@ -13,7 +13,7 @@ class Colors:
 class Model():
     def __init__(self, device):
         # Load model with weights
-        self._model = models.efficientnet_v2_l(weights=models.EfficientNet_V2_L_Weights.IMAGENET1K_V1)
+        self._model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.IMAGENET1K_V1)
 
         # Get the last output layer
         num_feat = self._model.classifier[1].in_features
@@ -45,13 +45,13 @@ class Model():
     def stage_2_training(self):
          for param in self._model.features[7].parameters():
             param.requires_grad = True
-         for param in self._model.features[8].parameters():
+         for param in self._model.features[6].parameters():
             param.requires_grad = True
 
     def stage_3_training(self):
-         for param in self._model.features[6].parameters():
-            param.requires_grad = True
          for param in self._model.features[5].parameters():
+            param.requires_grad = True
+         for param in self._model.features[4].parameters():
             param.requires_grad = True
 
     @property
