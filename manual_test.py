@@ -16,6 +16,7 @@ class Colors:
 def main():
     device = "mps"
     batch_size = 32
+    train_val_split = 0.8
 
     print(f"\n{Colors.BOLD}{'─'*60}{Colors.END}")
     print(f"{Colors.BOLD}  CSE144 Final Project Run Test{Colors.END}")
@@ -24,7 +25,7 @@ def main():
     print(f"  {Colors.BLUE}Device :{Colors.END} {device.upper()}")
     print(f"{Colors.BOLD}{'─'*60}{Colors.END}\n")
 
-    datasetloader = DatasetLoader(batch_size)
+    datasetloader = DatasetLoader(batch_size, train_val_split)
 
     train_data = datasetloader.train_loader.dataset
     
