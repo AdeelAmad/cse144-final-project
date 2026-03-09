@@ -24,6 +24,7 @@ class Trainer():
 
         self.mixup = v2.CutMix(num_classes=100, alpha=1.0)
         self.cutmix = v2.MixUp(num_classes=100, alpha=1.0)
+        self.mixup_cutmix = v2.RandomChoice([self.cutmix, self.mixup])
 
 
         self.setup_optimizer(lr=1e-2)
@@ -41,8 +42,9 @@ class Trainer():
         pbar = tqdm(loader, desc=f"  Train {epoch:2d}/{self.epochs}", leave=False, unit="batch")
         for inputs, labels in pbar:
             inputs, labels = inputs.to(self.device), labels.to(self.device)
-            inputs, labels = self.cutmix(inputs, labels)
-            inputs, labels = self.mixup(inputs, labels)
+            # inputs, labels = self.cutmix(inputs, labels)
+            # inputs, labels = self.mixup(inputs, labels)
+            inputs, labels = self.mixup_cutmix(inputs, labels)
 
             self.optimizer.zero_grad()
 
@@ -111,7 +113,7 @@ class Trainer():
             if epoch == 21:
                 tqdm.write(f"\n{Colors.YELLOW}{Colors.BOLD}Stage 2 training...{Colors.END}\n")
                 self.modelObj.stage_2_training()
-                self.setup_optimizer(lr=1e-3, t_max=self.epochs - 20)
+                self.setup_optimizer(lr=1e-4, t_max=self.epochs - 20)
 
             epoch_start = time.perf_counter()
 

@@ -16,7 +16,7 @@ class Colors:
 def main():
     device = "mps"
     batch_size = 16
-    epochs = 30
+    epochs = 40
     train_val_split = 0.8
 
     print(f"\n{Colors.BOLD}{'─'*60}{Colors.END}")
