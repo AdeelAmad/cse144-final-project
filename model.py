@@ -13,7 +13,7 @@ class Colors:
 class Model():
     def __init__(self, device):
         # Load model with weights
-        self._model = models.efficientnet_v2_m(weights=models.EfficientNet_V2_M_Weights.IMAGENET1K_V1)
+        self._model = models.efficientnet_v2_l(weights=models.EfficientNet_V2_L_Weights.IMAGENET1K_V1)
 
         # Get the last output layer
         num_feat = self._model.classifier[1].in_features
