@@ -30,7 +30,7 @@ class Trainer():
         self.setup_optimizer(lr=1e-3)
 
     def setup_optimizer(self, lr, t_max=None):
-        self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, self.modelObj.model.parameters()), lr=lr, weight_decay=0.03)
+        self.optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, self.modelObj.model.parameters()), lr=lr, weight_decay=0.1)
         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=t_max or self.epochs, eta_min=1e-6)
 
     def train_one_epoch(self, model, loader, epoch):
