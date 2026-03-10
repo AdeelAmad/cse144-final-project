@@ -115,15 +115,15 @@ class Trainer():
 
         for epoch in tqdm(range(1, self.epochs + 1), desc="Epochs", unit="epoch"):
 
-            if epoch == 21:
+            if epoch == 11:
                 tqdm.write(f"\n{Colors.YELLOW}{Colors.BOLD}Stage 2 training...{Colors.END}\n")
                 self.modelObj.stage_2_training()
-                self.setup_optimizer(lr=1e-4, t_max=self.epochs - 20)
+                self.setup_optimizer(lr=1e-4, t_max=self.epochs - 10)
 
-            if epoch == 31:
+            if epoch == 21:
                 tqdm.write(f"\n{Colors.YELLOW}{Colors.BOLD}Stage 3 training...{Colors.END}\n")
                 self.modelObj.stage_3_training()
-                self.setup_optimizer(lr=1e-5, t_max=self.epochs - 30)
+                self.setup_optimizer(lr=1e-5, t_max=self.epochs - 20)
 
             epoch_start = time.perf_counter()
 
